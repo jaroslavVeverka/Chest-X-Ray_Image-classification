@@ -1,5 +1,5 @@
 import h5py
-import numpy as np
+import pandas as pd
 import os
 import glob
 import cv2
@@ -20,10 +20,12 @@ import joblib
 h5_train_data = 'C:/Users/jarda/IdeaProjects/Chest X-Ray_Image classification/data/h5_train_data'
 h5f_train_data = h5py.File(h5_train_data, 'r')
 train_dataset = h5f_train_data['dataset_1']
-train_data = np.array(train_dataset)
+train_data = pd.DataFrame(train_dataset)
 h5f_train_data.close()
 
 print("[STATUS] train shape: {}".format(train_data.shape))
+print(f'Number of test data with label 0', sum(train_data[0] == 0))
+print(f'Number of test data with label 1', sum(train_data[0] == 1))
 
 print("[STATUS] training started...")
 
@@ -43,7 +45,7 @@ models.append(('SVM', SVC(random_state=seed)))
 trained_models = []
 for name, model in models:
     print("[STATUS] start training model of {}.".format(name))
-    model.fit(train_data[:,1:], train_data[:,0])
+    model.fit(train_data.iloc[:,1:], train_data.iloc[:,0])
     trained_models.append((name, model))
     print("[STATUS] model of {} trained".format(name))
 
